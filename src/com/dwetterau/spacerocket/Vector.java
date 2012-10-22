@@ -31,13 +31,27 @@ public class Vector {
     public double dot(Vector v){
         return a*v.a + b*v.b;
     }
-    /*
-      * Projects this vector onto the input vector
-      */
+    /**
+     * Projects this vector onto the input vector
+     *
+     * 10,0 onto 5,5
+     * 50/25
+     */
     public Vector proj(Vector v){
         double fact = this.dot(v)/v.dot(v);
         return new Vector(v.a*fact, v.b*fact);
     }
+
+    /**
+     * rejects this vector onto the input vector
+     *
+     */
+    public Vector rejection(Vector v) {
+        Vector proj = this.proj(v);
+        proj.reverse();
+        return new Vector(this.a + proj.a, this.b + proj.b);
+    }
+
     public double getMag(){
         return Math.sqrt(a*a+b*b);
     }
