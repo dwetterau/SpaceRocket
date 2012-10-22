@@ -11,12 +11,14 @@ public class Planet implements Body {
     private Color color;
     private Vector velocity;
     private Point location;
+    private double radius;
 
-    public Planet(double mass, Color color, Vector velocity, Point location) {
+    public Planet(double mass, Color color, Vector velocity, Point location, double radius) {
         this.mass = mass;
         this.color = color;
         this.velocity = velocity;
         this.location = location;
+        this.radius = radius;
     }
 
     @Override
@@ -47,6 +49,10 @@ public class Planet implements Body {
 
     public void setVelocity(Vector velocity) {
         this.velocity = velocity;
+    }
+
+    public double getRadius() {
+        return radius;
     }
 
 
