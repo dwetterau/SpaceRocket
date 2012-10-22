@@ -11,21 +11,26 @@ import java.util.ArrayList;
 public class Rocket implements Body {
     private double mass;
     private double fuel;
+    private double length;
     private Color color;
     private Vector velocity;
     private double angularVelocity;
     private Point location;
+    private double rotation;
     private ArrayList<Thruster> thrusters;
+    private static final double PI2 = Math.PI * 2;
 
 
-    public Rocket(double mass, double fuel, Color color, Vector velocity, double angularVelocity, Point location) {
+    public Rocket(double mass, double fuel, double length, Color color, Vector velocity, double angularVelocity, Point location) {
         this.mass = mass;
         this.fuel = fuel;
+        this.length = length;
         this.color = color;
         this.velocity = velocity;
         this.angularVelocity = angularVelocity;
         this.location = location;
         this.thrusters = new ArrayList<Thruster>();
+        this.rotation = 0;
     }
 
     @Override
@@ -56,19 +61,33 @@ public class Rocket implements Body {
                 Pair<Vector, Double> response = thruster.getForce(fuel, timeStep);
                 fuel -= response.getSecond();
 
-                Vector direction = thruster.getDirection();
-                Vector forceDirection = new Vector(response.getFirst());
                 Vector positionVector = new Vector(thruster.getLocation().x, thruster.getLocation().y);
+                positionVector.normalize();
 
-                response.getFirst().mult(timeStep/getMass());
-                velocity.addVector(response.getFirst());
+                Vector lateralForce = response.getFirst().proj(positionVector);
+                Vector tangentialForce = response.getFirst().rejection(positionVector);
+
+                lateralForce.mult(timeStep / getMass());
+                velocity.addVector(lateralForce);
+
+                double torque = tangentialForce.getMag()*Point.distance(new Point(0,0), thruster.getLocation());
+                angularVelocity += timeStep*torque/getInertia();
             }
         }
 
 
         location.x = location.x + velocity.a*timeStep;
         location.y = location.y + velocity.b*timeStep;
+        rotation += angularVelocity % PI2;
 
+    }
+
+    public double getInertia() {
+        return (1/12.0) * getMass() * length * length;
+    }
+
+    public double getLength() {
+        return length;
     }
 
     public double getAngularVelocity() {
@@ -92,6 +111,6 @@ public class Rocket implements Body {
     }
 
     public String toString() {
-        return ">[ m="+getMass()+" velocity="+ velocity + " loc="+location+" >";
+        return ">[ m="+getMass()+" velocity="+ velocity + " angular_vel="+ angularVelocity +" loc="+location+" >";
     }
 }
