@@ -12,6 +12,8 @@ import java.awt.image.BufferedImage;
  */
 public class GalaxyViewer {
 
+    public final static double TARGET_TIMESTEP = 1;
+
     private Point viewpoint;
     private double zoom; //imageHeight / displaying Height
     private Galaxy galaxy;
@@ -26,9 +28,16 @@ public class GalaxyViewer {
         this.zoom = zoom;
     }
 
+    public Point getViewpoint() {
+        return viewpoint;
+    }
+
     public void update(double timeStep) {
-        galaxy.updateVelocities(timeStep);
-        galaxy.moveEverything(timeStep);
+
+        while ((timeStep-=TARGET_TIMESTEP) > 0) {
+            galaxy.updateVelocities(TARGET_TIMESTEP);
+            galaxy.moveEverything(TARGET_TIMESTEP);
+        }
     }
 
 
@@ -44,26 +53,29 @@ public class GalaxyViewer {
             return image;
         }
         //calculate viewing bounds
-        double xOffset = (imageWidth>>1)/zoom;
-        double yOffset = (imageHeight>>1)/zoom;
+        double dx = imageWidth/(2*zoom);
+        double dy = imageHeight/(2*zoom);
 
 
         //terrible pruning
-        double maxRad = Math.sqrt(((imageWidth>>1)/zoom)*((imageWidth>>1)/zoom) + ((imageHeight>>1)/zoom)*((imageHeight>>1)/zoom));
+        double maxRad = Math.sqrt(dx*dx + dy*dy);
 
         for (Planet planet : galaxy.getPlanets()) {
             double effectiveRadius = planet.getRadius()*zoom;
-            //if (Point.distance(viewpoint, planet.getLocation()) < effectiveRadius + maxRad) {
+            if (Point.distance(viewpoint, planet.getLocation()) < planet.getRadius() + maxRad) {
                 //draw the planet
                 g.setColor(planet.getColor());
-                System.out.println(planet.getLocation().x*zoom-effectiveRadius+xOffset-viewpoint.x);
-                g.fillOval((int)(planet.getLocation().x*zoom-effectiveRadius+xOffset-viewpoint.x),
-                        (int)(planet.getLocation().y*zoom-effectiveRadius+yOffset-viewpoint.y),
-                        (int)(2*effectiveRadius),
-                        (int)(2*effectiveRadius));
-            //}
-        }
 
+                int xCenter = (int)((planet.getLocation().x-viewpoint.x)*zoom + imageWidth/2);
+                int yCenter = imageHeight - (int)((planet.getLocation().y-viewpoint.y)*zoom + imageHeight/2);
+
+                g.drawString("Planet",xCenter,yCenter);
+                g.fillOval( (int)(xCenter - effectiveRadius),
+                            (int)(yCenter - effectiveRadius),
+                            (int)(2*effectiveRadius),
+                            (int)(2*effectiveRadius));
+            }
+        }
         g.dispose();
         return image;
     }

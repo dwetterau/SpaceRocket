@@ -75,10 +75,16 @@ public class Rocket implements Body {
             }
         }
 
+        //use angular velocity to rotate every thrusters location && vector
+        for (Thruster thruster : thrusters) {
+            thruster.rotate(angularVelocity);
+        }
 
         location.x = location.x + velocity.a*timeStep;
         location.y = location.y + velocity.b*timeStep;
-        rotation += angularVelocity % PI2;
+        rotation = (rotation + angularVelocity) % PI2;
+
+        //move thruster locations in accordance with new rotation... or change the vector? or both?
 
     }
 

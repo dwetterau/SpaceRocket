@@ -58,4 +58,13 @@ public class Thruster {
     }
 
 
+    public void rotate(double angularVelocity) {
+        double cos = Math.cos(angularVelocity);
+        double sin = Math.sin(angularVelocity);
+        location = new Point(location.x*cos - location.y*sin,
+                             location.x*sin + location.y*cos);
+        direction = new Vector(direction.a*cos - direction.b*sin,
+                              direction.a*sin + direction.b*cos);
+
+    }
 }
