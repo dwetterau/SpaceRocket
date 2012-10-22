@@ -1,7 +1,7 @@
-package com.david.spacerocket;
+package com.dwetterau.spacerocket;
 
 /**
- * @author david
+ * @author dwetterau
  */
 public class Vector {
 
@@ -19,6 +19,11 @@ public class Vector {
         a = mag*Math.cos(theta);
         b = mag*Math.sin(theta);
     }
+
+    public Vector(Vector v) {
+        this(v.a, v.b);
+    }
+
     public void addVector(Vector v){
         a = a+v.a;
         b = b+v.b;

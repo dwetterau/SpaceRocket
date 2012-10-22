@@ -1,9 +1,9 @@
-package com.david.spacerocket;
+package com.dwetterau.spacerocket;
 
 import java.util.ArrayList;
 
 /**
- * @author david
+ * @author dwetterau
  */
 public class Galaxy {
 
@@ -27,14 +27,10 @@ public class Galaxy {
 
     public void moveEverything(double timeStep) {
         for (Rocket rocket : rockets) {
-            double x = rocket.getLocation().x + rocket.getVelocity().a*timeStep;
-            double y = rocket.getLocation().y + rocket.getVelocity().b*timeStep;
-            rocket.setLocation(new Point(x, y));
+            rocket.move(timeStep);
         }
         for (Planet planet : planets) {
-            double x = planet.getLocation().x + planet.getVelocity().a*timeStep;
-            double y = planet.getLocation().y + planet.getVelocity().b*timeStep;
-            planet.setLocation(new Point(x, y));
+            planet.move(timeStep);
         }
     }
 

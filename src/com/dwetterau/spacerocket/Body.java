@@ -1,9 +1,9 @@
-package com.david.spacerocket;
+package com.dwetterau.spacerocket;
 
 import java.awt.Color;
 
 /**
- * @author david
+ * @author dwetterau
  */
 public interface Body {
 
@@ -11,5 +11,6 @@ public interface Body {
     public Color getColor();
     public Vector getVelocity();
     public Point getLocation();
+    public void move(double timeStep);
 
 }

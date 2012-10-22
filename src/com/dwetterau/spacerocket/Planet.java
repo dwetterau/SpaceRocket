@@ -1,9 +1,9 @@
-package com.david.spacerocket;
+package com.dwetterau.spacerocket;
 
 import java.awt.Color;
 
 /**
- * @author david
+ * @author dwetterau
  */
 public class Planet implements Body {
 
@@ -37,6 +37,12 @@ public class Planet implements Body {
     @Override
     public Point getLocation() {
         return location;
+    }
+
+    @Override
+    public void move(double timeStep) {
+        location.x = location.x + velocity.a*timeStep;
+        location.y = location.y + velocity.b*timeStep;
     }
 
     public void setVelocity(Vector velocity) {

@@ -1,7 +1,7 @@
-package com.david.spacerocket;
+package com.dwetterau.spacerocket;
 
 /**
- * @author david
+ * @author dwetterau
  */
 public class Point {
     double x;
