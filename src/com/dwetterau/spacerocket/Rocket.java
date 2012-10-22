@@ -13,15 +13,17 @@ public class Rocket implements Body {
     private double fuel;
     private Color color;
     private Vector velocity;
+    private double angularVelocity;
     private Point location;
     private ArrayList<Thruster> thrusters;
 
 
-    public Rocket(double mass, double fuel, Color color, Vector velocity, Point location) {
+    public Rocket(double mass, double fuel, Color color, Vector velocity, double angularVelocity, Point location) {
         this.mass = mass;
         this.fuel = fuel;
         this.color = color;
         this.velocity = velocity;
+        this.angularVelocity = angularVelocity;
         this.location = location;
         this.thrusters = new ArrayList<Thruster>();
     }
@@ -53,6 +55,11 @@ public class Rocket implements Body {
             if (thruster.getState()) {
                 Pair<Vector, Double> response = thruster.getForce(fuel, timeStep);
                 fuel -= response.getSecond();
+
+                Vector direction = thruster.getDirection();
+                Vector forceDirection = new Vector(response.getFirst());
+                Vector positionVector = new Vector(thruster.getLocation().x, thruster.getLocation().y);
+
                 response.getFirst().mult(timeStep/getMass());
                 velocity.addVector(response.getFirst());
             }
@@ -62,6 +69,10 @@ public class Rocket implements Body {
         location.x = location.x + velocity.a*timeStep;
         location.y = location.y + velocity.b*timeStep;
 
+    }
+
+    public double getAngularVelocity() {
+        return angularVelocity;
     }
 
     public void setVelocity(Vector velocity) {

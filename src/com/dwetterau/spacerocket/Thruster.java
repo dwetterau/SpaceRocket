@@ -10,16 +10,18 @@ public class Thruster {
     private double fuelConsumption;
     private double thrust;
     private Vector direction;
+    private Point location;
     private boolean on;
 
     private Pair<Vector, Double> zeroResponse = new Pair<Vector, Double>(new Vector(0,0), 0.0);
 
-    public Thruster(double thrust, double fuelConsumption, Vector direction) {
+    public Thruster(double thrust, double fuelConsumption, Vector direction, Point location) {
         direction.normalize();
         this.thrust = thrust;
         this.fuelConsumption = fuelConsumption;
         this.direction = direction;
         this.on = true;
+        this.location = location;
     }
 
     public void turnOn() {
@@ -30,8 +32,16 @@ public class Thruster {
         this.on = false;
     }
 
+    public Vector getDirection() {
+        return direction;
+    }
+
     public boolean getState() {
         return this.on;
+    }
+
+    public Point getLocation() {
+        return location;
     }
 
     public Pair<Vector, Double> getForce(double fuelAvailable, double timeStep) {
