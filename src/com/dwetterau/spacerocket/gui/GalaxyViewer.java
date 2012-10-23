@@ -27,8 +27,16 @@ public class GalaxyViewer {
         this.zoom = zoom;
     }
 
+    public void setViewpoint(Point viewpoint) {
+        this.viewpoint = viewpoint;
+    }
+
     public Point getViewpoint() {
         return viewpoint;
+    }
+
+    public double getZoom() {
+        return zoom;
     }
 
     public void moveUp() {

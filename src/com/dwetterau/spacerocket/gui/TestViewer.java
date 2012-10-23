@@ -5,16 +5,13 @@ import com.dwetterau.spacerocket.Point;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
-import java.awt.event.MouseWheelEvent;
-import java.awt.event.MouseWheelListener;
+import java.awt.event.*;
 import java.io.IOException;
 
 /**
  * @author dwetterau
  */
-public class TestViewer extends JFrame implements KeyListener, MouseWheelListener {
+public class TestViewer extends JFrame implements KeyListener, MouseWheelListener, MouseMotionListener, MouseListener {
 
     private static final int WIDTH = 1000;
     private static final int HEIGHT = 800;
@@ -26,6 +23,8 @@ public class TestViewer extends JFrame implements KeyListener, MouseWheelListene
     private static int TARGET_DELAY = 17; //approximately 60 fps.
 
     private GalaxyViewer galaxyViewer;
+    private Point click;
+    private Point initialViewpoint;
 
     public TestViewer() {
         setSize(WIDTH2, HEIGHT2);
@@ -42,11 +41,13 @@ public class TestViewer extends JFrame implements KeyListener, MouseWheelListene
         //use zoom .0000004
 
         testGalaxy.getRockets().add(new Rocket(100, 20, 50, Color.RED, new Vector(0,0), 0, new Point(0,0)));
-        testGalaxy.getRockets().get(0).addThruster(new Thruster(1, 1, new Vector(1,1), new Point(0,-25)));
+        testGalaxy.getRockets().get(0).addThruster(new Thruster(1, 1, new Vector(1, 1), new Point(0, -25)));
         //testGalaxy.getRockets().get(0).getThrusters().get(0).turnOff();
         galaxyViewer = new GalaxyViewer(new Point(0,0), WIDTH, HEIGHT, testGalaxy, 1);
 
         addKeyListener(this);
+        addMouseListener(this);
+        addMouseMotionListener(this);
         addMouseWheelListener(this);
     }
 
@@ -146,5 +147,45 @@ public class TestViewer extends JFrame implements KeyListener, MouseWheelListene
         } else {
             galaxyViewer.zoomIn();
         }
+    }
+
+    @Override
+    public void mouseDragged(MouseEvent e) {
+        if (click != null && initialViewpoint != null) {
+            Point diff = new Point(e.getX() - click.x, e.getY() - click.y);
+            diff.y = -diff.y;
+            diff.multiply(1/galaxyViewer.getZoom()).add(initialViewpoint);
+
+            galaxyViewer.setViewpoint(diff);
+        }
+    }
+
+    @Override
+    public void mouseMoved(MouseEvent e) {
+
+    }
+
+    @Override
+    public void mouseClicked(MouseEvent e) {
+    }
+
+    @Override
+    public void mousePressed(MouseEvent e) {
+        click = new Point(e.getX(), e.getY());
+        initialViewpoint = galaxyViewer.getViewpoint();
+    }
+
+    @Override
+    public void mouseReleased(MouseEvent e) {
+        click = null;
+        initialViewpoint = null;
+    }
+
+    @Override
+    public void mouseEntered(MouseEvent e) {
+    }
+
+    @Override
+    public void mouseExited(MouseEvent e) {
     }
 }
