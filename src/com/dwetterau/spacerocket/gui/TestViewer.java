@@ -9,12 +9,14 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.awt.event.MouseWheelEvent;
+import java.awt.event.MouseWheelListener;
 import java.io.IOException;
 
 /**
  * @author dwetterau
  */
-public class TestViewer extends JFrame implements KeyListener {
+public class TestViewer extends JFrame implements KeyListener, MouseWheelListener {
 
     private static final int WIDTH = 1000;
     private static final int HEIGHT = 800;
@@ -36,12 +38,13 @@ public class TestViewer extends JFrame implements KeyListener {
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 
 
-
-
         Galaxy testGalaxy = new Galaxy();
         testGalaxy.getPlanets().add(new Planet(5.97219*Math.pow(10,24), Color.BLUE, new Vector(0,0), new Point(0,0), 6378100));
         testGalaxy.getPlanets().add(new Planet(7.34767309*Math.pow(10,22), Color.WHITE, new Vector(1000,0), new Point(0,385000000), 1737400));
         galaxyViewer = new GalaxyViewer(new Point(0,0), WIDTH, HEIGHT, testGalaxy, .0000004);
+
+        addKeyListener(this);
+        addMouseWheelListener(this);
     }
 
     public void	fixSize(){
@@ -112,18 +115,33 @@ public class TestViewer extends JFrame implements KeyListener {
 
     @Override
     public void keyTyped(KeyEvent e) {
-        if (e.getKeyCode() == KeyEvent.VK_UP) {
-            //galaxyViewer.getViewpoint().y
-        }
+
     }
 
     @Override
     public void keyPressed(KeyEvent e) {
-
+        if (e.getKeyCode() == KeyEvent.VK_UP) {
+            galaxyViewer.moveUp();
+        } else if (e.getKeyCode() == KeyEvent.VK_DOWN){
+            galaxyViewer.moveDown();
+        } else if (e.getKeyCode() == KeyEvent.VK_LEFT){
+            galaxyViewer.moveLeft();
+        } else if (e.getKeyCode() == KeyEvent.VK_RIGHT){
+            galaxyViewer.moveRight();
+        }
     }
 
     @Override
     public void keyReleased(KeyEvent e) {
 
+    }
+
+    @Override
+    public void mouseWheelMoved(MouseWheelEvent e) {
+        if (e.getWheelRotation() > 0) {
+            galaxyViewer.zoomOut();
+        } else {
+            galaxyViewer.zoomIn();
+        }
     }
 }

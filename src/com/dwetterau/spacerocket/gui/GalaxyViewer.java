@@ -32,6 +32,30 @@ public class GalaxyViewer {
         return viewpoint;
     }
 
+    public void moveUp() {
+        viewpoint.y += imageHeight/zoom/100;
+    }
+
+    public void moveDown() {
+        viewpoint.y -= imageHeight/zoom/100;
+    }
+
+    public void moveLeft() {
+        viewpoint.x -= imageWidth/zoom/100;
+    }
+
+    public void moveRight() {
+        viewpoint.x += imageWidth/zoom/100;
+    }
+
+    public void zoomIn() {
+        zoom *= 1.1;
+    }
+
+    public void zoomOut() {
+        zoom *= .9;
+    }
+
     public void update(double timeStep) {
 
         while ((timeStep-=TARGET_TIMESTEP) > 0) {
