@@ -1,9 +1,7 @@
 package com.dwetterau.spacerocket.gui;
 
-import com.dwetterau.spacerocket.Galaxy;
-import com.dwetterau.spacerocket.Planet;
+import com.dwetterau.spacerocket.*;
 import com.dwetterau.spacerocket.Point;
-import com.dwetterau.spacerocket.Vector;
 
 import javax.swing.*;
 import java.awt.*;
@@ -39,9 +37,14 @@ public class TestViewer extends JFrame implements KeyListener, MouseWheelListene
 
 
         Galaxy testGalaxy = new Galaxy();
-        testGalaxy.getPlanets().add(new Planet(5.97219*Math.pow(10,24), Color.BLUE, new Vector(0,0), new Point(0,0), 6378100));
-        testGalaxy.getPlanets().add(new Planet(7.34767309*Math.pow(10,22), Color.WHITE, new Vector(1000,0), new Point(0,385000000), 1737400));
-        galaxyViewer = new GalaxyViewer(new Point(0,0), WIDTH, HEIGHT, testGalaxy, .0000004);
+        //testGalaxy.getPlanets().add(new Planet(5.97219*Math.pow(10,24), Color.BLUE, new Vector(0,0), new Point(0,0), 6378100));
+        //testGalaxy.getPlanets().add(new Planet(7.34767309*Math.pow(10,22), Color.WHITE, new Vector(1000,0), new Point(0,385000000), 1737400));
+        //use zoom .0000004
+
+        testGalaxy.getRockets().add(new Rocket(100, 20, 50, Color.RED, new Vector(0,0), 0, new Point(0,0)));
+        testGalaxy.getRockets().get(0).addThruster(new Thruster(1, 1, new Vector(1,1), new Point(0,-25)));
+        //testGalaxy.getRockets().get(0).getThrusters().get(0).turnOff();
+        galaxyViewer = new GalaxyViewer(new Point(0,0), WIDTH, HEIGHT, testGalaxy, 1);
 
         addKeyListener(this);
         addMouseWheelListener(this);
@@ -94,7 +97,7 @@ public class TestViewer extends JFrame implements KeyListener, MouseWheelListene
             long paintingTime = time+System.currentTimeMillis();
             //System.out.println("Painting time: "+paintingTime);
             time = -System.currentTimeMillis();
-            testViewer.galaxyViewer.update(1000); //Go for 1000 seconds. Don't want to use the granularity though
+            testViewer.galaxyViewer.update(1); //Go for 1000 seconds. Don't want to use the granularity though
             long updateTime = time + System.currentTimeMillis();
             //System.out.println("Update time: "+updateTime);
             times++;

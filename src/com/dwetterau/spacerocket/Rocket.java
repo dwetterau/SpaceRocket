@@ -21,7 +21,14 @@ public class Rocket implements Body {
     private static final double PI2 = Math.PI * 2;
 
 
-    public Rocket(double mass, double fuel, double length, Color color, Vector velocity, double angularVelocity, Point location) {
+    public Rocket(double mass,
+                  double fuel,
+                  double length,
+                  Color color,
+                  Vector velocity,
+                  double angularVelocity,
+                  Point location) {
+
         this.mass = mass;
         this.fuel = fuel;
         this.length = length;
@@ -60,6 +67,10 @@ public class Rocket implements Body {
             if (thruster.getState()) {
                 Pair<Vector, Double> response = thruster.getForce(fuel, timeStep);
                 fuel -= response.getSecond();
+
+                if (fuel <= 0.0000000001) {
+                    thruster.turnOff();
+                }
 
                 Vector positionVector = new Vector(thruster.getLocation().x, thruster.getLocation().y);
                 positionVector.normalize();
@@ -110,6 +121,10 @@ public class Rocket implements Body {
 
     public ArrayList<Thruster> getThrusters() {
         return thrusters;
+    }
+
+    public double getRotation() {
+        return rotation;
     }
 
     public void addThruster(Thruster thruster) {

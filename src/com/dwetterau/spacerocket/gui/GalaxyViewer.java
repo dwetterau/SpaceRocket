@@ -1,7 +1,6 @@
 package com.dwetterau.spacerocket.gui;
 
-import com.dwetterau.spacerocket.Galaxy;
-import com.dwetterau.spacerocket.Planet;
+import com.dwetterau.spacerocket.*;
 import com.dwetterau.spacerocket.Point;
 
 import java.awt.*;
@@ -58,7 +57,7 @@ public class GalaxyViewer {
 
     public void update(double timeStep) {
 
-        while ((timeStep-=TARGET_TIMESTEP) > 0) {
+        while ((timeStep-=TARGET_TIMESTEP) >= 0) {
             galaxy.updateVelocities(TARGET_TIMESTEP);
             galaxy.moveEverything(TARGET_TIMESTEP);
         }
@@ -83,7 +82,6 @@ public class GalaxyViewer {
 
         //terrible pruning
         double maxRad = Math.sqrt(dx*dx + dy*dy);
-
         for (Planet planet : galaxy.getPlanets()) {
             double effectiveRadius = planet.getRadius()*zoom;
             if (Point.distance(viewpoint, planet.getLocation()) < planet.getRadius() + maxRad) {
@@ -100,6 +98,59 @@ public class GalaxyViewer {
                             (int)(2*effectiveRadius));
             }
         }
+
+        for (Rocket rocket : galaxy.getRockets()) {
+            //drawing rockets is going to suck...
+            int xCenter = (int)((rocket.getLocation().x-viewpoint.x)*zoom + imageWidth/2);
+            int yCenter = (int)((rocket.getLocation().y-viewpoint.y)*zoom + imageHeight/2);
+
+            Point center = new Point(xCenter, yCenter);
+
+            double len = rocket.getLength();
+            double theta = rocket.getRotation();
+            Point A = new Point(-len/10, -len/2);
+            A = A.rotate(theta).multiply(zoom).add(center);
+            Point B = new Point(len/10, -len/2);
+            B = B.rotate(theta).multiply(zoom).add(center);
+            Point C = new Point(-len/10, 7*len/16);
+            C = C.rotate(theta).multiply(zoom).add(center);
+            Point D = new Point(len/10, 7*len/16);
+            D = D.rotate(theta).multiply(zoom).add(center);
+            Point E = new Point(0, len/2);
+            E = E.rotate(theta).multiply(zoom).add(center);
+
+            System.out.println(center);
+
+            g.setColor(rocket.getColor());
+            g.drawString("Rocket",xCenter,imageHeight - yCenter);
+            //6 line rocket drawing
+            g.drawLine(A.getX(), imageHeight - A.getY(), B.getX(), imageHeight - B.getY());
+            g.drawLine(B.getX(), imageHeight - B.getY(), D.getX(), imageHeight - D.getY());
+            g.drawLine(C.getX(), imageHeight - C.getY(), D.getX(), imageHeight - D.getY());
+            g.drawLine(E.getX(), imageHeight - E.getY(), D.getX(), imageHeight - D.getY());
+            g.drawLine(C.getX(), imageHeight - C.getY(), E.getX(), imageHeight - E.getY());
+            g.drawLine(C.getX(), imageHeight - C.getY(), A.getX(), imageHeight - A.getY());
+
+            int thrusterRadius = (int)(len/10 * zoom);
+
+            for (Thruster t : rocket.getThrusters()) {
+                Point p = new Point(t.getLocation());
+                p = p.multiply(zoom).add(center);
+
+                if (t.getState()) {
+                    g.fillOval(p.getX()-thrusterRadius,
+                        imageHeight - p.getY()-thrusterRadius,
+                        2*thrusterRadius,
+                        2*thrusterRadius);
+                } else {
+                    g.drawOval(p.getX()-thrusterRadius,
+                        imageHeight - p.getY()-thrusterRadius,
+                        2*thrusterRadius,
+                        2*thrusterRadius);
+                }
+            }
+        }
+
         g.dispose();
         return image;
     }
